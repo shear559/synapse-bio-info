@@ -4,6 +4,10 @@
 
 **Live:** [synapse-bio-smoky.vercel.app](https://synapse-bio-smoky.vercel.app)
 
+<p align="center">
+  <img src="assets/preview.webp" alt="synapse-bio — the live site" width="100%">
+</p>
+
 Five surfaces — Lab, Graph, Analyses, Findings, Dashboard — over a graph of genes, proteins, pathways, diseases and drugs. Vanilla no-build: `index.html` loads global/IIFE scripts and a vendored `force-graph` + GSAP. Static on Vercel behind a response-header CSP narrowing `connect-src` to `'self'` and one Worker origin, holding D1 and KV. The 109-node, 180-link seed graph is **synthetic and illustrative**, not a curated clinical source; the Lab surface states that predicted links are hypotheses to investigate — not clinical facts or medical advice.
 
 ## Ranking a missing edge by how under-studied it is
