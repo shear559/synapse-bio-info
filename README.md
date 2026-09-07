@@ -4,11 +4,13 @@
 
 **Live:** [synapse-bio-smoky.vercel.app](https://synapse-bio-smoky.vercel.app)
 
+**Current status — September 2026:** local graph exploration and the local findings notebook remain available. The D1 database was intentionally retired on September 4, so findings sync is unavailable until it is restored and rebound. AI enrichment is also unconfigured; deterministic hypotheses remain available.
+
 <p align="center">
   <img src="assets/preview.webp" alt="Synapse Bio — the Discovery Lab surface on the live site" width="100%">
 </p>
 
-Five surfaces — Lab, Graph, Analyses, Findings, Dashboard — over a graph of genes, proteins, pathways, diseases and drugs. Vanilla no-build: `index.html` loads global/IIFE scripts and a vendored `force-graph` + GSAP. Static on Vercel behind a response-header CSP narrowing `connect-src` to `'self'` and one Worker origin, holding D1 and KV. The 109-node, 180-link seed graph is **synthetic and illustrative**, not a curated clinical source; the Lab surface states that predicted links are hypotheses to investigate — not clinical facts or medical advice.
+Five surfaces — Lab, Graph, Analyses, Findings, Dashboard — over a graph of genes, proteins, pathways, diseases and drugs. Vanilla no-build: `index.html` loads global/IIFE scripts and a vendored `force-graph` + GSAP. Static on Vercel behind a response-header CSP narrowing `connect-src` to `'self'` and one Worker origin, with D1 and KV integrations in the backend implementation. The 109-node, 180-link seed graph is **synthetic and illustrative**, not a curated clinical source; the Lab surface states that predicted links are hypotheses to investigate — not clinical facts or medical advice.
 
 ## Ranking a missing edge by how under-studied it is
 
@@ -24,11 +26,11 @@ Five surfaces — Lab, Graph, Analyses, Findings, Dashboard — over a graph of 
 
 ## Failing closed on every metered and writing endpoint
 
-The per-IP limiter refuses requests when its KV binding is missing. `/api/findings` demands an `x-sync-token` compared in constant time: unset secret 503, wrong token 401. Anthropic calls sit behind a **global** daily ceiling (default 300 calls a day), so IP rotation cannot bill unbounded tokens. **AI enrichment is not provisioned**: no `ANTHROPIC_API_KEY` is set, so `/api/explain` and `/api/hypothesize` answer 503 and the deterministic dossier stands alone; `/api/health` currently reports `ai:false` alongside `sync:true`.
+The per-IP limiter refuses requests when its KV binding is missing. `/api/findings` demands an `x-sync-token` compared in constant time: unset secret 503, wrong token 401. Anthropic calls sit behind a **global** daily ceiling (default 300 calls a day), so IP rotation cannot bill unbounded tokens. **AI enrichment is not provisioned**: no `ANTHROPIC_API_KEY` is set, so `/api/explain` and `/api/hypothesize` answer 503 and the deterministic dossier stands alone; `/api/health` reports configuration flags, not a successful database query. Its `sync:true` flag can remain set after the database is retired and must not be treated as proof that sync works.
 
 ## Verifying against production, not just localhost
 
-35 unit tests under `node --test`, plus a Playwright end-to-end pass **against the deployed URL**: all green, zero console errors, the synthetic seed swapped for a 76-node live graph yielding 24 candidates, findings surviving the swap. An adversarial four-lens review produced 16 confirmed findings, all fixed.
+The earlier release verification included 35 unit tests and a Playwright pass against the deployed URL, including a live graph import and local findings persistence. Those checks predate the database retirement. On **2026-09-07**, Chromium loaded the current Discovery Lab without page errors or failed requests; this pass did not verify an authenticated sync operation or a fresh external-data import.
 
 ## Screenshots
 
